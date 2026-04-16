@@ -1,0 +1,16 @@
+<div style="width:1280px;height:670px;background:#F1EFE8;position:relative;overflow:hidden;font-family:'Noto Sans JP',sans-serif;box-sizing:border-box;">
+  <!-- TITLEの1文字目を巨大背景表示 -->
+  <div style="position:absolute;left:60px;top:50%;transform:translateY(-50%);font-size:320px;font-weight:bold;color:#D3D1C7;opacity:.35;line-height:1;font-family:'Noto Serif JP',serif;pointer-events:none;" data-first-char>{{FIRST_CHAR}}</div>
+  <!-- コンテンツ -->
+  <div style="position:absolute;left:120px;top:120px;right:100px;bottom:60px;display:flex;flex-direction:column;justify-content:center;">
+    <!-- TAGの前にアクセントライン -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+      <div style="width:32px;height:3px;background:#BA7517;"></div>
+      <div style="font-size:12px;color:#BA7517;letter-spacing:.25em;">{{TAG}}</div>
+    </div>
+    <div style="font-size:74px;font-weight:bold;color:#2C2C2A;line-height:1.2;margin-bottom:20px;font-family:'Noto Serif JP',serif;">{{TITLE}}</div>
+    <div style="font-size:18px;color:#5F5E5A;line-height:1.6;">{{SUB}}</div>
+  </div>
+  <!-- 日付 -->
+  <div style="position:absolute;right:60px;bottom:40px;font-size:13px;color:#888780;">{{DATE}}</div>
+</div>

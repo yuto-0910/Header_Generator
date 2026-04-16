@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>note ヘッダー画像ジェネレーター</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: #f5f5f3;
+      color: #2C2C2A;
+      min-height: 100vh;
+      padding: 32px 24px 64px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 28px;
+      color: #2C2C2A;
+    }
+    /* テンプレートボタン */
+    .template-btns {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .template-btns button {
+      padding: 8px 20px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .template-btns button:hover { border-color: #888; }
+    .template-btns button.active {
+      border-color: #2C2C2A;
+      background: #2C2C2A;
+      color: #fff;
+    }
+    /* 入力エリア */
+    .inputs {
+      max-width: 600px;
+      margin: 0 auto 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .inputs label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: #888;
+    }
+    .inputs input {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .inputs input:focus { border-color: #2C2C2A; }
+    /* ボタン */
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .actions button {
+      padding: 10px 28px;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .actions button:hover { opacity: .85; }
+    #btn-preview {
+      background: #2C2C2A;
+      color: #fff;
+    }
+    #btn-download {
+      background: #3C3489;
+      color: #fff;
+    }
+    /* プレビュー */
+    .preview-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 2px 16px rgba(0,0,0,.08);
+      background: #fff;
+    }
+    .preview-scaler {
+      width: 1280px;
+      height: 670px;
+      transform-origin: top left;
+    }
+  </style>
+</head>
+<body>
+  <h1>note ヘッダー画像ジェネレーター</h1>
+
+  <div class="template-btns" id="template-btns"></div>
+
+  <div class="inputs">
+    <label>TAG<input type="text" id="input-tag" value="エッセイ" /></label>
+    <label>TITLE<input type="text" id="input-title" value="タイトルを入力" /></label>
+    <label>SUB<input type="text" id="input-sub" value="サブタイトルを入力" /></label>
+    <label>DATE<input type="text" id="input-date" value="2026.04.16" /></label>
+  </div>
+
+  <div class="actions">
+    <button id="btn-preview">プレビュー更新</button>
+    <button id="btn-download">PNGダウンロード</button>
+  </div>
+
+  <div class="preview-wrapper" id="preview-wrapper">
+    <div class="preview-scaler" id="preview-scaler"></div>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    let templates = [];
+    let currentId = '01';
+    let rawTemplate = '';
+
+    // テンプレ一覧を読み込み
+    fetch('templates/index.json')
+      .then(r => r.json())
+      .then(data => {
+        templates = data;
+        const container = $('template-btns');
+        templates.forEach(t => {
+          const btn = document.createElement('button');
+          btn.textContent = t.name;
+          btn.dataset.id = t.id;
+          btn.addEventListener('click', () => selectTemplate(t.id));
+          container.appendChild(btn);
+        });
+        selectTemplate(templates[0].id);
+      });
+
+    function selectTemplate(id) {
+      currentId = id;
+      const t = templates.find(t => t.id === id);
+      // ボタンのアクティブ状態
+      document.querySelectorAll('.template-btns button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.id === id);
+      });
+      // テンプレHTMLを取得
+      fetch('templates/' + t.file)
+        .then(r => r.text())
+        .then(html => {
+          rawTemplate = html;
+          updatePreview();
+        });
+    }
+
+    function updatePreview() {
+      const tag = $('input-tag').value;
+      const title = $('input-title').value;
+      const sub = $('input-sub').value;
+      const date = $('input-date').value;
+      const firstChar = title.charAt(0) || '';
+
+      let html = rawTemplate
+        .replace(/\{\{TAG\}\}/g, tag)
+        .replace(/\{\{TITLE\}\}/g, title)
+        .replace(/\{\{SUB\}\}/g, sub)
+        .replace(/\{\{DATE\}\}/g, date)
+        .replace(/\{\{FIRST_CHAR\}\}/g, firstChar);
+
+      $('preview-scaler').innerHTML = html;
+      fitPreview();
+    }
+
+    function fitPreview() {
+      const wrapper = $('preview-wrapper');
+      const scaler = $('preview-scaler');
+      const scale = wrapper.clientWidth / 1280;
+      scaler.style.transform = 'scale(' + scale + ')';
+      wrapper.style.height = Math.round(670 * scale) + 'px';
+    }
+
+    // プレビュー更新ボタン
+    $('btn-preview').addEventListener('click', updatePreview);
+
+    // Enterキーでプレビュー更新
+    document.querySelectorAll('.inputs input').forEach(input => {
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') updatePreview();
+      });
+    });
+
+    // PNGダウンロード
+    $('btn-download').addEventListener('click', () => {
+      const scaler = $('preview-scaler');
+      // 一時的にスケールをリセット
+      scaler.style.transform = 'scale(1)';
+      $('preview-wrapper').style.height = '670px';
+
+      html2canvas(scaler, {
+        width: 1280,
+        height: 670,
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null
+      }).then(canvas => {
+        const a = document.createElement('a');
+        a.download = 'note-header-' + currentId + '.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        // スケールを戻す
+        fitPreview();
+      });
+    });
+
+    // ウィンドウリサイズ時にプレビューを調整
+    window.addEventListener('resize', fitPreview);
+  </script>
+</body>
+</html>
