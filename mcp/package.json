@@ -1,0 +1,14 @@
+{
+  "name": "header-generator-mcp",
+  "version": "1.0.0",
+  "description": "noteヘッダー画像を生成するMCPサーバー",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "puppeteer": "^24.9.0"
+  }
+}
