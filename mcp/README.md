@@ -34,18 +34,28 @@ AIに以下をコピペ:
 # MCPサーバーの接続設定タスク
 
 ## やること
-Claude Desktopの設定ファイルに header-generator MCPサーバーを登録する。
+1. header-generator MCPサーバーの依存パッケージをインストールする
+2. Claude Desktopの設定ファイルにMCPサーバーを登録する
 
 ## 手順
 
-### 1. server.js の絶対パスを確認する
+### 1. 依存パッケージをインストールする
+mcp/ ディレクトリに移動して npm install を実行しろ。
+```
+cd mcp
+npm install
+```
+node_modules/ が存在しないとサーバーが起動できない。
+npm install 時にChromium（約200MB）が自動ダウンロードされるが、正常な動作なので完了まで中断するな。
+
+### 2. server.js の絶対パスを確認する
 以下のコマンドをターミナルで実行して、server.jsの絶対パスを取得しろ。
 ```
 realpath mcp/server.js
 ```
 取得したパスを次のステップで使う。
 
-### 2. 設定ファイルを編集する
+### 3. 設定ファイルを編集する
 以下のファイルを開け:
 - Mac:     ~/Library/Application Support/Claude/claude_desktop_config.json
 - Windows: %APPDATA%\Claude\claude_desktop_config.json
@@ -63,7 +73,7 @@ realpath mcp/server.js
 }
 ```
 
-### 3. 重要な注意
+### 4. 重要な注意
 - 既存の設定（"preferences" など）は絶対に削除・変更するな
 - 既存の "mcpServers" がある場合は、その中に "header-generator" を追加しろ（上書きするな）
 - JSONの構文を壊すな（カンマの過不足に注意）
@@ -102,18 +112,28 @@ AIに以下をコピペ:
 # MCPサーバーの接続設定タスク
 
 ## やること
-Gemini CLIの設定ファイルに header-generator MCPサーバーを登録する。
+1. header-generator MCPサーバーの依存パッケージをインストールする
+2. Gemini CLIの設定ファイルにMCPサーバーを登録する
 
 ## 手順
 
-### 1. server.js の絶対パスを確認する
+### 1. 依存パッケージをインストールする
+mcp/ ディレクトリに移動して npm install を実行しろ。
+```
+cd mcp
+npm install
+```
+node_modules/ が存在しないとサーバーが起動できない。
+npm install 時にChromium（約200MB）が自動ダウンロードされるが、正常な動作なので完了まで中断するな。
+
+### 2. server.js の絶対パスを確認する
 以下のコマンドをターミナルで実行して、server.jsの絶対パスを取得しろ。
 ```
 realpath mcp/server.js
 ```
 取得したパスを次のステップで使う。
 
-### 2. 設定ファイルを編集する
+### 3. 設定ファイルを編集する
 以下のファイルを開け:
 ~/.gemini/settings.json
 
@@ -130,7 +150,7 @@ realpath mcp/server.js
 }
 ```
 
-### 3. 重要な注意
+### 4. 重要な注意
 - 既存の設定内容は絶対に削除・変更するな
 - 既存の "mcpServers" がある場合は、その中に "header-generator" を追加しろ（上書きするな）
 - JSONの構文を壊すな（カンマの過不足に注意）
@@ -156,18 +176,28 @@ AIに以下をコピペ:
 # MCPサーバーの接続設定タスク
 
 ## やること
-Claude Codeの設定ファイルに header-generator MCPサーバーを登録する。
+1. header-generator MCPサーバーの依存パッケージをインストールする
+2. Claude Codeの設定ファイルにMCPサーバーを登録する
 
 ## 手順
 
-### 1. server.js の絶対パスを確認する
+### 1. 依存パッケージをインストールする
+mcp/ ディレクトリに移動して npm install を実行しろ。
+```
+cd mcp
+npm install
+```
+node_modules/ が存在しないとサーバーが起動できない。
+npm install 時にChromium（約200MB）が自動ダウンロードされるが、正常な動作なので完了まで中断するな。
+
+### 2. server.js の絶対パスを確認する
 以下のコマンドをターミナルで実行して、server.jsの絶対パスを取得しろ。
 ```
 realpath mcp/server.js
 ```
 取得したパスを次のステップで使う。
 
-### 2. 設定ファイルを編集する
+### 3. 設定ファイルを編集する
 プロジェクトルートに .claude/settings.json を作成（または開いて）、
 以下の内容を書き込め:
 
@@ -182,7 +212,7 @@ realpath mcp/server.js
 }
 ```
 
-### 3. 重要な注意
+### 4. 重要な注意
 - 既存の設定内容は絶対に削除・変更するな
 - 既存の "mcpServers" がある場合は、その中に "header-generator" を追加しろ（上書きするな）
 - JSONの構文を壊すな（カンマの過不足に注意）
